@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <link rel="stylesheet" href="../stylesheets/signup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Signup</h1>
+
+      <form id="signupForm" novalidate>
+        <div class="input-group">
+          <input type="email" id="signupEmail" placeholder="Email">
+          <small id="signupEmailError" class="error"></small>
+        </div>
+
+        <div class="input-group password-group">
+          <input type="password" id="signupPassword" placeholder="Create password">
+          <button type="button" class="toggle-btn" data-target="signupPassword">Show</button>
+          <small id="signupPasswordError" class="error"></small>
+        </div>
+
+        <div class="input-group password-group">
+          <input type="password" id="confirmPassword" placeholder="Confirm password">
+          <button type="button" class="toggle-btn" data-target="confirmPassword">Show</button>
+          <small id="confirmPasswordError" class="error"></small>
+        </div>
+
+        <button type="submit" class="primary-btn">Signup</button>
+
+        <p class="switch-text">Already have an account? <a href="../webpages/login.html">Login</a></p>
+
+        <div class="divider"><span>Or</span></div>
+
+        <button type="button" class="social-btn facebook-btn">Login with Facebook</button>
+        <button type="button" class="social-btn google-btn">Login with Google</button>
+
+        <p id="signupSuccess" class="success"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="../logic/signup.js"></script>
+</body>
+</html>

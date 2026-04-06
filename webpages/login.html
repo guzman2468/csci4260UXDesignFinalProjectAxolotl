@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="../stylesheets/login.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Login</h1>
+
+      <form id="loginForm" novalidate>
+        <div class="input-group">
+          <input type="email" id="loginEmail" placeholder="Email">
+          <small id="loginEmailError" class="error"></small>
+        </div>
+
+        <div class="input-group password-group">
+          <input type="password" id="loginPassword" placeholder="Password">
+          <button type="button" class="toggle-btn" data-target="loginPassword">Show</button>
+          <small id="loginPasswordError" class="error"></small>
+        </div>
+
+        <!-- to be done if time allows -->
+        <!-- <a href="#" class="link">Forgot password?</a> -->
+
+        <button type="submit" class="primary-btn">Login</button>
+
+        <p class="switch-text">Don't have an account? <a href="../webpages/signup.html">Signup</a></p>
+
+        <div class="divider"><span>Or</span></div>
+
+        <button type="button" class="social-btn facebook-btn">Login with Facebook</button>
+        <button type="button" class="social-btn google-btn">Login with Google</button>
+
+        <p id="loginSuccess" class="success"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="../logic/login.js"></script>
+</body>
+</html>

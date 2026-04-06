@@ -1,0 +1,163 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #3f6fe8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 32px 28px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 28px;
+  color: #222;
+}
+
+.input-group {
+  margin-bottom: 14px;
+  position: relative;
+}
+
+input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #d6d6d6;
+  border-radius: 6px;
+  font-size: 16px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #0b78e3;
+  box-shadow: 0 0 0 3px rgba(11, 120, 227, 0.12);
+}
+
+.password-group input {
+  padding-right: 70px;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.primary-btn,
+.social-btn {
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.primary-btn {
+  background: #0b78e3;
+  color: white;
+  margin-bottom: 14px;
+}
+
+.primary-btn:hover {
+  background: #0868c4;
+}
+
+.switch-text {
+  text-align: center;
+  margin-bottom: 18px;
+  color: #444;
+  font-size: 15px;
+}
+
+.switch-text a {
+  color: #4d7ddf;
+  text-decoration: none;
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 14px 0 18px;
+  color: #888;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #dddddd;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.divider span {
+  background: #ffffff;
+  padding: 0 10px;
+}
+
+.social-btn {
+  margin-bottom: 12px;
+  border: 1px solid #d8d8d8;
+  background: white;
+  color: #333;
+}
+
+.facebook-btn {
+  background: #4267b2;
+  color: white;
+  border: none;
+}
+
+.error {
+  display: block;
+  min-height: 18px;
+  margin-top: 5px;
+  color: #d93025;
+  font-size: 13px;
+}
+
+.input-error {
+  border-color: #d93025 !important;
+}
+
+.success {
+  min-height: 18px;
+  margin-top: 4px;
+  text-align: center;
+  color: #128a3f;
+  font-size: 14px;
+}
