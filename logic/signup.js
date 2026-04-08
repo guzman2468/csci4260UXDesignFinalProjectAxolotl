@@ -7,6 +7,9 @@ const signupPasswordError = document.getElementById("signupPasswordError");
 const confirmPasswordError = document.getElementById("confirmPasswordError");
 const signupSuccess = document.getElementById("signupSuccess");
 const signupToggleButtons = document.querySelectorAll(".toggle-btn");
+const supabaseUrl = "https://ogizpqbereqnqcxihkfp.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9naXpwcWJlcmVxbnFjeGloa2ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDEyODIsImV4cCI6MjA5MTA3NzI4Mn0.8cWpsMa2pj4-olPORCdzvb4V--UgT9SeceDa1LRErGI";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 function validEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -76,4 +79,29 @@ signupToggleButtons.forEach(function (button) {
       button.textContent = "Show";
     }
   });
+});
+
+signupForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value;
+
+  const { data, error } = await supabaseClient
+    .from("users")
+    .insert([
+      {
+        email: email,
+        password: password
+      }
+    ]);
+
+  if (error) {
+    console.error(error);
+    alert(error.message);
+    return;
+  }
+
+  console.log(data);
+  alert("User inserted into table.");
 });
