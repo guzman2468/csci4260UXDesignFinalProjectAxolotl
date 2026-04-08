@@ -25,47 +25,47 @@ function clearError(input, errorBox) {
   errorBox.textContent = "";
 }
 
-signupForm.addEventListener("submit", function (event) {
-  event.preventDefault();
+// signupForm.addEventListener("submit", function (event) {
+//   event.preventDefault();
 
-  let isValid = true;
-  signupSuccess.textContent = "";
+//   let isValid = true;
+//   signupSuccess.textContent = "";
 
-  clearError(signupEmail, signupEmailError);
-  clearError(signupPassword, signupPasswordError);
-  clearError(confirmPassword, confirmPasswordError);
+//   clearError(signupEmail, signupEmailError);
+//   clearError(signupPassword, signupPasswordError);
+//   clearError(confirmPassword, confirmPasswordError);
 
-  if (signupEmail.value.trim() === "") {
-    setError(signupEmail, signupEmailError, "Email is required.");
-    isValid = false;
-  } else if (!validEmail(signupEmail.value)) {
-    setError(signupEmail, signupEmailError, "Enter a valid email address.");
-    isValid = false;
-  }
+//   if (signupEmail.value.trim() === "") {
+//     setError(signupEmail, signupEmailError, "Email is required.");
+//     isValid = false;
+//   } else if (!validEmail(signupEmail.value)) {
+//     setError(signupEmail, signupEmailError, "Enter a valid email address.");
+//     isValid = false;
+//   }
 
-  if (signupPassword.value.trim() === "") {
-    setError(signupPassword, signupPasswordError, "Password is required.");
-    isValid = false;
-  } else if (signupPassword.value.length < 8) {
-    setError(signupPassword, signupPasswordError, "Password must be at least 8 characters.");
-    isValid = false;
-  } else if (!/[A-Z]/.test(signupPassword.value) || !/[0-9]/.test(signupPassword.value)) {
-    setError(signupPassword, signupPasswordError, "Use at least 1 uppercase letter and 1 number.");
-    isValid = false;
-  }
+//   if (signupPassword.value.trim() === "") {
+//     setError(signupPassword, signupPasswordError, "Password is required.");
+//     isValid = false;
+//   } else if (signupPassword.value.length < 8) {
+//     setError(signupPassword, signupPasswordError, "Password must be at least 8 characters.");
+//     isValid = false;
+//   } else if (!/[A-Z]/.test(signupPassword.value) || !/[0-9]/.test(signupPassword.value)) {
+//     setError(signupPassword, signupPasswordError, "Use at least 1 uppercase letter and 1 number.");
+//     isValid = false;
+//   }
 
-  if (confirmPassword.value.trim() === "") {
-    setError(confirmPassword, confirmPasswordError, "Please confirm your password.");
-    isValid = false;
-  } else if (confirmPassword.value !== signupPassword.value) {
-    setError(confirmPassword, confirmPasswordError, "Passwords do not match.");
-    isValid = false;
-  }
+//   if (confirmPassword.value.trim() === "") {
+//     setError(confirmPassword, confirmPasswordError, "Please confirm your password.");
+//     isValid = false;
+//   } else if (confirmPassword.value !== signupPassword.value) {
+//     setError(confirmPassword, confirmPasswordError, "Passwords do not match.");
+//     isValid = false;
+//   }
 
-  if (isValid) {
-    signupSuccess.textContent = "Signup form is valid.";
-  }
-});
+//   if (isValid) {
+//     signupSuccess.textContent = "Signup form is valid.";
+//   }
+// });
 
 signupToggleButtons.forEach(function (button) {
   button.addEventListener("click", function () {
@@ -84,9 +84,52 @@ signupToggleButtons.forEach(function (button) {
 signupForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  const email = document.getElementById("signupEmail").value.trim();
-  const password = document.getElementById("signupPassword").value;
+  let isValid = true;
+  signupSuccess.textContent = "";
 
+  const email = signupEmail.value.trim();
+  const password = signupPassword.value;
+  const confirm = confirmPassword.value;
+
+  // clear old errors
+  clearError(signupEmail, signupEmailError);
+  clearError(signupPassword, signupPasswordError);
+  clearError(confirmPassword, confirmPasswordError);
+
+  // EMAIL VALIDATION
+  if (email === "") {
+    setError(signupEmail, signupEmailError, "Email is required.");
+    isValid = false;
+  } else if (!validEmail(email)) {
+    setError(signupEmail, signupEmailError, "Enter a valid email address.");
+    isValid = false;
+  }
+
+  // PASSWORD VALIDATION
+  if (password.trim() === "") {
+    setError(signupPassword, signupPasswordError, "Password is required.");
+    isValid = false;
+  } else if (password.length < 8) {
+    setError(signupPassword, signupPasswordError, "Password must be at least 8 characters.");
+    isValid = false;
+  } else if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+    setError(signupPassword, signupPasswordError, "Use at least 1 uppercase letter and 1 number.");
+    isValid = false;
+  }
+
+  // CONFIRM PASSWORD
+  if (confirm.trim() === "") {
+    setError(confirmPassword, confirmPasswordError, "Please confirm your password.");
+    isValid = false;
+  } else if (confirm !== password) {
+    setError(confirmPassword, confirmPasswordError, "Passwords do not match.");
+    isValid = false;
+  }
+
+  // 🚨 STOP HERE if invalid
+  if (!isValid) return;
+
+  // ✅ ONLY RUN IF VALID
   const { data, error } = await supabaseClient
     .from("users")
     .insert([
@@ -102,6 +145,6 @@ signupForm.addEventListener("submit", async function (event) {
     return;
   }
 
-  console.log(data);
-  alert("User inserted into table.");
+  signupSuccess.textContent = "Account created!";
+  alert("Signup successful");
 });

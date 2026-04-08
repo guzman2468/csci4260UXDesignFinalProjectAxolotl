@@ -23,35 +23,35 @@ function clearError(input, errorBox) {
   errorBox.textContent = "";
 }
 
-loginForm.addEventListener("submit", function (event) {
-  event.preventDefault();
+// loginForm.addEventListener("submit", function (event) {
+//   event.preventDefault();
 
-  let isValid = true;
-  loginSuccess.textContent = "";
+//   let isValid = true;
+//   loginSuccess.textContent = "";
 
-  clearError(loginEmail, loginEmailError);
-  clearError(loginPassword, loginPasswordError);
+//   clearError(loginEmail, loginEmailError);
+//   clearError(loginPassword, loginPasswordError);
 
-  if (loginEmail.value.trim() === "") {
-    setError(loginEmail, loginEmailError, "Email is required.");
-    isValid = false;
-  } else if (!validEmail(loginEmail.value)) {
-    setError(loginEmail, loginEmailError, "Enter a valid email address.");
-    isValid = false;
-  }
+//   if (loginEmail.value.trim() === "") {
+//     setError(loginEmail, loginEmailError, "Email is required.");
+//     isValid = false;
+//   } else if (!validEmail(loginEmail.value)) {
+//     setError(loginEmail, loginEmailError, "Enter a valid email address.");
+//     isValid = false;
+//   }
 
-  if (loginPassword.value.trim() === "") {
-    setError(loginPassword, loginPasswordError, "Password is required.");
-    isValid = false;
-  } else if (loginPassword.value.length < 6) {
-    setError(loginPassword, loginPasswordError, "Password must be at least 6 characters.");
-    isValid = false;
-  }
+//   if (loginPassword.value.trim() === "") {
+//     setError(loginPassword, loginPasswordError, "Password is required.");
+//     isValid = false;
+//   } else if (loginPassword.value.length < 6) {
+//     setError(loginPassword, loginPasswordError, "Password must be at least 6 characters.");
+//     isValid = false;
+//   }
 
-  if (isValid) {
-    loginSuccess.textContent = "Login form is valid.";
-  }
-});
+//   if (isValid) {
+//     loginSuccess.textContent = "Login form is valid.";
+//   }
+// });
 
 loginToggleBtn.addEventListener("click", function () {
   if (loginPassword.type === "password") {
@@ -66,9 +66,38 @@ loginToggleBtn.addEventListener("click", function () {
 loginForm.addEventListener("submit", async function (event) {
   event.preventDefault();
 
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
+  let isValid = true;
+  loginSuccess.textContent = "";
 
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value;
+
+  // clear old errors
+  clearError(loginEmail, loginEmailError);
+  clearError(loginPassword, loginPasswordError);
+
+  // EMAIL VALIDATION
+  if (email === "") {
+    setError(loginEmail, loginEmailError, "Email is required.");
+    isValid = false;
+  } else if (!validEmail(email)) {
+    setError(loginEmail, loginEmailError, "Enter a valid email address.");
+    isValid = false;
+  }
+
+  // PASSWORD VALIDATION
+  if (password.trim() === "") {
+    setError(loginPassword, loginPasswordError, "Password is required.");
+    isValid = false;
+  } else if (password.length < 6) {
+    setError(loginPassword, loginPasswordError, "Password must be at least 6 characters.");
+    isValid = false;
+  }
+
+  // 🚨 STOP if invalid
+  if (!isValid) return;
+
+  // ✅ ONLY RUN IF VALID
   const { data, error } = await supabaseClient
     .from("users")
     .select("*")
