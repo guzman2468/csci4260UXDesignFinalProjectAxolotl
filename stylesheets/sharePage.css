@@ -1,0 +1,166 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #3f6fe8;
+  color: #222;
+}
+
+.top-bar {
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  text-align: center;
+  padding: 26px 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.top-bar h1 {
+  font-size: 2.1rem;
+  font-weight: 700;
+}
+
+.share-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px 60px;
+}
+
+.share-card {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  padding: 36px 30px 30px;
+  text-align: center;
+}
+
+.share-card h2 {
+  font-size: 2rem;
+  margin-bottom: 28px;
+}
+
+.share-title {
+  font-size: 1.6rem;
+  margin-bottom: 34px;
+  color: #333;
+}
+
+.link-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.link-row label {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.link-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.link-box input {
+  flex: 1;
+  height: 46px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 1rem;
+  outline: none;
+  background: #f9fbff;
+}
+
+.copy-btn {
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 8px;
+  background: #f2f5fb;
+  color: #222;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: #dfe8f7;
+}
+
+.download-btn {
+  border: none;
+  border-radius: 10px;
+  background: #0b78e3;
+  color: #ffffff;
+  min-width: 200px;
+  padding: 16px 28px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.download-btn:hover {
+  background: #0868c4;
+  transform: translateY(-1px);
+}
+
+.status-text {
+  min-height: 22px;
+  margin-top: 16px;
+  color: #128a3f;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 560px) {
+  .share-card {
+    padding: 28px 18px 24px;
+  }
+
+  .share-title {
+    font-size: 1.3rem;
+  }
+
+  .link-row label {
+    font-size: 1.4rem;
+  }
+
+  .download-btn {
+    min-width: 170px;
+    font-size: 1.2rem;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #f2f5fb;
+  color: #222;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #dfe8f7;
+}

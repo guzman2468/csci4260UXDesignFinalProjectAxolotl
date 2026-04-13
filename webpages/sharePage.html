@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share</title>
+  <link rel="stylesheet" href="../stylesheets/sharePage.css">
+</head>
+<body>
+  <header class="top-bar">
+    <h1>Share</h1>
+  </header>
+
+  <main class="share-wrapper">
+    <section class="share-card">
+      <button class="close-btn" id="closeBtn">×</button>
+      <h2>Axolotl</h2>
+      <p class="share-title">Share <span id="recordingTitle">{Title}</span></p>
+
+      <div class="link-row">
+        <label for="shareLink">Link:</label>
+        <div class="link-box">
+          <input
+            type="text"
+            id="shareLink"
+            value="https://axolotl.app/share/ambient-sketch-01"
+            readonly
+          >
+          <button class="copy-btn" id="copyBtn" aria-label="Copy link">⧉</button>
+        </div>
+      </div>
+
+      <button class="download-btn" id="downloadBtn">Download</button>
+      <p class="status-text" id="statusText"></p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../logic/sharePage.js"></script>
+</body>
+</html>

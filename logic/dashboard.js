@@ -8,10 +8,13 @@ createBtn.addEventListener("click", function () {
 
 recordingsBtn.addEventListener("click", function () {
   window.location.href = "recordings.html";
-});
+}); 
 
 shareButtons.forEach(function (button) {
   button.addEventListener("click", function () {
-    alert("Share button clicked.");
+    const row = button.closest(".table-row");
+    const title = row.querySelector(".col-title").textContent.trim();
+
+    window.location.href = "sharePage.html?title=" + encodeURIComponent(title);
   });
 });
