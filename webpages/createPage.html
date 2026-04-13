@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Page</title>
+  <link rel="stylesheet" href="../stylesheets/createPage.css">
+</head>
+<body>
+  <header class="top-bar">
+    <h1>Create</h1>
+  </header>
+
+  <main class="page-layout">
+    <aside class="side-panel">
+      <button class="menu-button" id="menuButton" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="side-menu" id="sideMenu">
+        <button class="menu-link" id="recordBtn">Record</button>
+        <button class="menu-link" id="settingsBtn">Settings</button>
+        <button class="menu-link exit-link" id="exitBtn">Exit</button>
+      </nav>
+    </aside>
+
+    <section class="content-area">
+      <div class="content-card">
+        <h2>New Recording Workspace</h2>
+        <p>This page is ready for your create flow.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../logic/createPage.js"></script>
+</body>
+</html>

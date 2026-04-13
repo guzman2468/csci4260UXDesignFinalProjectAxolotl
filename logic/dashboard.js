@@ -3,7 +3,7 @@ const recordingsBtn = document.getElementById("recordingsBtn");
 const shareButtons = document.querySelectorAll(".share-btn");
 
 createBtn.addEventListener("click", function () {
-  alert("Create button clicked.");
+  window.location.href = "createPage.html";
 });
 
 recordingsBtn.addEventListener("click", function () {
