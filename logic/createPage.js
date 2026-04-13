@@ -12,7 +12,7 @@ recordBtn.addEventListener("click", function () {
 });
 
 settingsBtn.addEventListener("click", function () {
-  alert("Settings clicked.");
+  window.location.href = "settings.html";
 });
 
 exitBtn.addEventListener("click", function () {

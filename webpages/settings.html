@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <link rel="stylesheet" href="../stylesheets/settings.css">
+</head>
+<body>
+  <header class="top-bar">
+    <h1>SOUND BOARD SETTINGS</h1>
+  </header>
+
+  <main class="settings-wrapper">
+    <section class="settings-card">
+      <button class="close-btn" id="closeBtn" aria-label="Close settings">×</button>
+
+      <h2 class="section-title">Customize your sound experience</h2>
+
+      <div class="divider"></div>
+
+      <form class="settings-form">
+        <div class="setting-row">
+          <label for="soundPreset">Sound Preset</label>
+          <select id="soundPreset">
+            <option>Warm Pad</option>
+            <option>Bright Lead</option>
+            <option>Deep Bass</option>
+            <option>Ambient Texture</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <label for="volume">Volume</label>
+          <select id="volume">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+            <option>Max</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <label for="tempo">Tempo</label>
+          <select id="tempo">
+            <option>60 BPM</option>
+            <option>90 BPM</option>
+            <option>120 BPM</option>
+            <option>140 BPM</option>
+          </select>
+        </div>
+
+        <div class="setting-row">
+          <label for="reverb">Reverb</label>
+          <select id="reverb">
+            <option>Small Room</option>
+            <option>Hall</option>
+            <option>Plate</option>
+            <option>Large Space</option>
+          </select>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../logic/settings.js"></script>
+</body>
+</html>
