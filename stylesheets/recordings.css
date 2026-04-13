@@ -1,0 +1,180 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #3f6fe8;
+  color: #222;
+}
+
+.top-bar {
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+  text-align: center;
+  padding: 26px 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.top-bar h1 {
+  font-size: 2.1rem;
+  font-weight: 700;
+}
+
+.recordings-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px 60px;
+}
+
+.recordings-card {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  padding: 34px 28px 28px;
+}
+
+.recordings-card h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 1.3rem;
+  color: #444;
+  margin-bottom: 26px;
+}
+
+.table-card {
+  border: 1px solid #dbe2f0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table-header,
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 0.9fr;
+  align-items: center;
+}
+
+.table-header {
+  background: #f2f5fb;
+  border-bottom: 1px solid #dbe2f0;
+  font-weight: 700;
+  min-height: 70px;
+}
+
+.table-header > div,
+.table-row > div {
+  padding: 0 20px;
+}
+
+.table-row {
+  min-height: 72px;
+  border-bottom: 1px solid #e7ebf4;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.col-date,
+.col-share {
+  border-left: 1px solid #e1e6f0;
+}
+
+.share-btn {
+  border: none;
+  border-radius: 8px;
+  background: #0b78e3;
+  color: #ffffff;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.share-btn:hover {
+  background: #0868c4;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 720px) {
+  .recordings-card {
+    padding: 28px 16px 20px;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 1.5fr 1fr 0.9fr;
+    font-size: 0.95rem;
+  }
+
+  .table-header > div,
+  .table-row > div {
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .table-header {
+    display: none;
+  }
+
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 16px 0;
+  }
+
+  .col-date,
+  .col-share {
+    border-left: none;
+  }
+
+  .col-title::before {
+    content: "Title: ";
+    font-weight: 700;
+  }
+
+  .col-date::before {
+    content: "Date: ";
+    font-weight: 700;
+  }
+
+  .col-share::before {
+    content: "Share: ";
+    font-weight: 700;
+    margin-right: 8px;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #f2f5fb;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #222;
+  transition: background 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #dfe8f7;
+}

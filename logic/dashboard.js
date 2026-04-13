@@ -7,7 +7,7 @@ createBtn.addEventListener("click", function () {
 });
 
 recordingsBtn.addEventListener("click", function () {
-  alert("Recordings button clicked.");
+  window.location.href = "recordings.html";
 });
 
 shareButtons.forEach(function (button) {

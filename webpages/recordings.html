@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recordings</title>
+  <link rel="stylesheet" href="../stylesheets/recordings.css">
+</head>
+<body>
+  <header class="top-bar">
+    <h1>Recordings</h1>
+  </header>
+
+  <main class="recordings-wrapper">
+    <section class="recordings-card">
+      <button class="close-btn" id="closeBtn">×</button>
+      <h2>Your recently recorded sessions</h2>
+      <p class="section-title">Recordings</p>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="col-title">Title</div>
+          <div class="col-date">Date</div>
+          <div class="col-share">Share</div>
+        </div>
+
+        <div class="table-body">
+          <div class="table-row">
+            <div class="col-title">Ambient Sketch 01</div>
+            <div class="col-date">04/12/2026</div>
+            <div class="col-share"><button class="share-btn">Share</button></div>
+          </div>
+
+          <div class="table-row">
+            <div class="col-title">Late Night Loop</div>
+            <div class="col-date">04/10/2026</div>
+            <div class="col-share"><button class="share-btn">Share</button></div>
+          </div>
+
+          <div class="table-row">
+            <div class="col-title">Water Texture Demo</div>
+            <div class="col-date">04/08/2026</div>
+            <div class="col-share"><button class="share-btn">Share</button></div>
+          </div>
+
+          <div class="table-row">
+            <div class="col-title">Test Recording A</div>
+            <div class="col-date">04/05/2026</div>
+            <div class="col-share"><button class="share-btn">Share</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../logic/recordings.js"></script>
+</body>
+</html>
