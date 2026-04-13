@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../stylesheets/dashboard.css">
+</head>
+<body>
+  <header class="top-bar">
+    <h1>SOUND BOARD START MENU</h1>
+  </header>
+
+  <main class="dashboard-wrapper">
+    <section class="hero-section">
+      <button class="create-btn" id="createBtn">Create</button>
+      <button class="recordings-btn" id="recordingsBtn">Recordings</button>
+    </section>
+
+    <section class="table-card">
+      <div class="table-header">
+        <div class="col-title">Title</div>
+        <div class="col-date">Date</div>
+        <div class="col-share">Share</div>
+      </div>
+
+      <div class="table-body" id="recordingsTable">
+        <div class="table-row">
+          <div class="col-title">Ocean Ambience Mix</div>
+          <div class="col-date">04/13/2026</div>
+          <div class="col-share"><button class="share-btn">Share</button></div>
+        </div>
+
+        <div class="table-row">
+          <div class="col-title">Morning Practice Session</div>
+          <div class="col-date">04/11/2026</div>
+          <div class="col-share"><button class="share-btn">Share</button></div>
+        </div>
+
+        <div class="table-row">
+          <div class="col-title">Synth Demo Recording</div>
+          <div class="col-date">04/08/2026</div>
+          <div class="col-share"><button class="share-btn">Share</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="../logic/dashboard.js"></script>
+</body>
+</html>

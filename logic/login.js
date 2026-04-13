@@ -94,10 +94,10 @@ loginForm.addEventListener("submit", async function (event) {
     isValid = false;
   }
 
-  // 🚨 STOP if invalid
+
   if (!isValid) return;
 
-  // ✅ ONLY RUN IF VALID
+
   const { data, error } = await supabaseClient
     .from("users")
     .select("*")
@@ -115,5 +115,6 @@ loginForm.addEventListener("submit", async function (event) {
     alert("Login failed");
   } else {
     alert("Login successful");
+    window.location.href = "dashboard.html";
   }
 });

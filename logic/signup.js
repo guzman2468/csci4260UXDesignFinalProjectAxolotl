@@ -126,10 +126,8 @@ signupForm.addEventListener("submit", async function (event) {
     isValid = false;
   }
 
-  // 🚨 STOP HERE if invalid
   if (!isValid) return;
 
-  // ✅ ONLY RUN IF VALID
   const { data, error } = await supabaseClient
     .from("users")
     .insert([
