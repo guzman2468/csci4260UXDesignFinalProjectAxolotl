@@ -2,6 +2,8 @@ const recordBtn = document.getElementById("recordBtn");
 const settingsBtn = document.getElementById("settingsBtn");
 const exitBtn = document.getElementById("exitBtn");
 const menuButton = document.getElementById("menuButton");
+const recordModal = document.getElementById("recordModal");
+const sideMenu = document.getElementById("sideMenu");
 
 const tourOverlay = document.getElementById("tourOverlay");
 const tourHighlight = document.getElementById("tourHighlight");
@@ -12,12 +14,17 @@ const tourNextBtn = document.getElementById("tourNextBtn");
 const tourCloseBtn = document.getElementById("tourCloseBtn");
 
 menuButton.addEventListener("click", function () {
-  alert("Menu button clicked.");
+  sideMenu.classList.toggle("show");
 });
+
+recordBtn.addEventListener("click", () => sideMenu.classList.remove("show"));
+settingsBtn.addEventListener("click", () => sideMenu.classList.remove("show"));
+exitBtn.addEventListener("click", () => sideMenu.classList.remove("show"));
 
 recordBtn.addEventListener("click", function () {
   const isRecording = recordBtn.classList.toggle("recording-active");
   recordBtn.textContent = isRecording ? "Recording" : "Record";
+  recordModal.classList.toggle("show", isRecording);
 });
 
 settingsBtn.addEventListener("click", function () {
@@ -97,7 +104,26 @@ function positionTour(step) {
 }
 
 function showTourStep() {
-  positionTour(tourSteps[currentTourStep]);
+  const step = tourSteps[currentTourStep];
+
+  // Open menu if needed
+  if (step.element === "#recordBtn" || step.element === "#settingsBtn") {
+    sideMenu.classList.add("show");
+
+    // Wait for menu to render before positioning
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        positionTour(step);
+      });
+    });
+
+  } else {
+    sideMenu.classList.remove("show");
+
+    requestAnimationFrame(() => {
+      positionTour(step);
+    });
+  }
 }
 
 function startTour() {

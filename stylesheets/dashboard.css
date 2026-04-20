@@ -132,6 +132,39 @@ body {
   background: #0868c4;
 }
 
+.auth-footer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.auth-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 22px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  background: #ffffff;
+  color: #222;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.auth-btn:hover {
+  transform: translateY(-2px);
+}
+.user-info {
+  font-weight: 700;
+  color: white;
+  background: rgba(255,255,255,0.2);
+  padding: 10px 16px;
+  border-radius: 10px;
+}
+
 @media (max-width: 700px) {
   .dashboard-wrapper {
     padding: 28px 14px 40px;

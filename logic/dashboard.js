@@ -1,6 +1,24 @@
 const createBtn = document.getElementById("createBtn");
 const recordingsBtn = document.getElementById("recordingsBtn");
 const shareButtons = document.querySelectorAll(".share-btn");
+const signInBtn = document.querySelector(".sign-in");
+const signUpBtn = document.querySelector(".sign-up");
+
+signInBtn.addEventListener("click", function () {
+  window.location.href = "login.html";
+});
+
+signUpBtn.addEventListener("click", function () {
+  window.location.href = "signup.html";
+});
+
+const tourOverlay = document.getElementById("tourOverlay");
+const tourHighlight = document.getElementById("tourHighlight");
+const tourPopup = document.getElementById("tourPopup");
+const tourTitle = document.getElementById("tourTitle");
+const tourText = document.getElementById("tourText");
+const tourNextBtn = document.getElementById("tourNextBtn");
+const tourCloseBtn = document.getElementById("tourCloseBtn");
 
 const tourOverlay = document.getElementById("tourOverlay");
 const tourHighlight = document.getElementById("tourHighlight");
