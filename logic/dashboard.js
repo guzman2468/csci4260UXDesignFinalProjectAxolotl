@@ -20,13 +20,6 @@ const tourText = document.getElementById("tourText");
 const tourNextBtn = document.getElementById("tourNextBtn");
 const tourCloseBtn = document.getElementById("tourCloseBtn");
 
-const tourOverlay = document.getElementById("tourOverlay");
-const tourHighlight = document.getElementById("tourHighlight");
-const tourPopup = document.getElementById("tourPopup");
-const tourTitle = document.getElementById("tourTitle");
-const tourText = document.getElementById("tourText");
-const tourNextBtn = document.getElementById("tourNextBtn");
-const tourCloseBtn = document.getElementById("tourCloseBtn");
 
 createBtn.addEventListener("click", function () {
   window.location.href = "createPage.html";
