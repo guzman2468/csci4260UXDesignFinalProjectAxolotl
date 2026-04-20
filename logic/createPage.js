@@ -24,6 +24,7 @@ exitBtn.addEventListener("click", () => sideMenu.classList.remove("show"));
 recordBtn.addEventListener("click", function () {
   const isRecording = recordBtn.classList.toggle("recording-active");
   recordBtn.textContent = isRecording ? "Recording" : "Record";
+  recordModal.classList.toggle("show", isRecording);
 });
 
 settingsBtn.addEventListener("click", function () {
@@ -103,7 +104,26 @@ function positionTour(step) {
 }
 
 function showTourStep() {
-  positionTour(tourSteps[currentTourStep]);
+  const step = tourSteps[currentTourStep];
+
+  // Open menu if needed
+  if (step.element === "#recordBtn" || step.element === "#settingsBtn") {
+    sideMenu.classList.add("show");
+
+    // Wait for menu to render before positioning
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        positionTour(step);
+      });
+    });
+
+  } else {
+    sideMenu.classList.remove("show");
+
+    requestAnimationFrame(() => {
+      positionTour(step);
+    });
+  }
 }
 
 function startTour() {
