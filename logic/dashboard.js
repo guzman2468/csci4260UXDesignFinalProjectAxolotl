@@ -1,6 +1,16 @@
 const createBtn = document.getElementById("createBtn");
 const recordingsBtn = document.getElementById("recordingsBtn");
 const shareButtons = document.querySelectorAll(".share-btn");
+const signInBtn = document.querySelector(".sign-in");
+const signUpBtn = document.querySelector(".sign-up");
+
+signInBtn.addEventListener("click", function () {
+  window.location.href = "login.html";
+});
+
+signUpBtn.addEventListener("click", function () {
+  window.location.href = "signup.html";
+});
 
 createBtn.addEventListener("click", function () {
   window.location.href = "createPage.html";
