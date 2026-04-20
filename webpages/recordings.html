@@ -52,7 +52,19 @@
       </div>
     </section>
   </main>
+<div id="tourOverlay" class="tour-overlay hidden">
+  <div id="tourHighlight" class="tour-highlight"></div>
 
+  <div id="tourPopup" class="tour-popup hidden">
+    <button id="tourCloseBtn" class="tour-close-btn">×</button>
+    <h2 id="tourTitle">Welcome</h2>
+    <p id="tourText"></p>
+
+    <div class="tour-buttons">
+      <button id="tourNextBtn" class="tour-btn">Next</button>
+    </div>
+  </div>
+</div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../logic/recordings.js"></script>
 </body>
