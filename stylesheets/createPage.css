@@ -63,7 +63,7 @@ body {
 }
 
 .side-menu {
-  width: 120px;
+  width: 160px;
   background: #ffffff;
   border-radius: 14px;
   padding: 18px 14px;
@@ -74,16 +74,35 @@ body {
 }
 
 .menu-link {
-  border: none;
+  border: 2px solid transparent;
   background: transparent;
   text-align: left;
   font-size: 1.2rem;
   cursor: pointer;
   color: #222;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 500;
+  width: 100%;
+  transition: all 0.2s ease;
 }
 
 .menu-link:hover {
   color: #0b78e3;
+  background: rgba(11, 120, 227, 0.08);
+}
+
+.menu-link.recording-active {
+  background: #0b78e3;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  font-weight: 700;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+
+.menu-link.recording-active:hover {
+  color: #ffffff;
+  background: #095fb3;
 }
 
 .exit-link {

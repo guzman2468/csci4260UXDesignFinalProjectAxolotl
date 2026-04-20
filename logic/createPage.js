@@ -8,7 +8,8 @@ menuButton.addEventListener("click", function () {
 });
 
 recordBtn.addEventListener("click", function () {
-  alert("Record clicked.");
+  const isRecording = recordBtn.classList.toggle("recording-active");
+  recordBtn.textContent = isRecording ? "Recording" : "Record";
 });
 
 settingsBtn.addEventListener("click", function () {
