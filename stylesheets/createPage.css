@@ -128,25 +128,43 @@ body {
 
 .content-card {
   min-height: 520px;
+  position: relative;
   width: 100%;
   background: rgba(255, 255, 255, 0.18);
   border: 2px dashed rgba(255, 255, 255, 0.45);
   border-radius: 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 28px;
-  color: #ffffff;
+
+  display: grid; /* 🔥 CHANGE THIS */
+  grid-template-columns: repeat(16, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+
+  overflow: hidden;
 }
 
-.content-card h2 {
-  font-size: 1.8rem;
-  margin-bottom: 10px;
+/* cells */
+.cell {
+  position: relative;
+  overflow: hidden;
 }
 
-.content-card p {
-  font-size: 1rem;
-  opacity: 0.95;
+/* ripple ring */
+.note-dot {
+  position: absolute;
+  z-index: 2;
+}
+
+.note-ring {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cell.active {
+  background: #0b78e3;
+}
+
+.cell.playing {
+  outline: 2px solid #fff;
 }
 
 .top-bar {
@@ -174,6 +192,50 @@ body {
 
 .record-pill.show {
   display: block;
+}
+
+#timeline {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.15);
+  margin-top: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+#playhead {
+  height: 100%;
+  width: 0%;
+  background: white;
+  transition: width 0.03s linear;
+}
+
+/* RULER */
+#ruler {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  margin-top: 4px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+}
+
+/* tick marks */
+.tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.tick::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 6px;
+  background: rgba(255,255,255,0.6);
+  margin: 0 auto 2px;
 }
 
 @media (max-width: 760px) {
@@ -291,3 +353,205 @@ body {
 .tour-btn:hover {
   background: #0868c4;
 }
+
+
+
+/* ─────────────────────────────────────────────
+   TRANSPORT CONTROLS
+   Add this block to the bottom of createPage.css
+   ───────────────────────────────────────────── */
+ 
+/* Wrapper that sits directly under .content-card */
+.transport-bar {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+ 
+/* ── Row 1: play/pause + scrubber + time label ── */
+.transport-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+ 
+#play-pause {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff;
+  color: #222;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background 0.15s, transform 0.1s;
+}
+ 
+#play-pause:hover {
+  background: #f0f4ff;
+}
+ 
+#play-pause:active {
+  transform: scale(0.93);
+}
+ 
+/* Scrubber — sits on the blue background so we go white */
+#scrubber {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+ 
+#scrubber:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+ 
+#scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+ 
+#scrubber::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+ 
+#scrubber::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+ 
+#time-label {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-family: 'Courier New', Courier, monospace;
+  color: rgba(255, 255, 255, 0.85);
+  min-width: 64px;
+  text-align: right;
+  letter-spacing: 0.5px;
+}
+ 
+/* ── Row 2: ruler ── */
+#ruler-wrap {
+  position: relative;
+  height: 22px;
+}
+ 
+/* The filled progress track behind tick marks */
+#ruler-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  overflow: hidden;
+}
+ 
+#ruler-fill {
+  height: 100%;
+  width: 0%;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  transition: width 0.04s linear;
+}
+ 
+/* Tick marks + labels */
+.tick-mark {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+ 
+.tick-mark .tick-line {
+  width: 1px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.45);
+}
+ 
+.tick-mark .tick-lbl {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 2px;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.3px;
+}
+ 
+/* ── Vertical playline inside .content-card ── */
+#playline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0%;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  z-index: 5;
+  border-radius: 1px;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+  transition: left 0.04s linear;
+}
+ 
+/* ── Recording badge ── */
+#loop-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+  background: rgba(220, 40, 40, 0.75);
+  border: 1px solid rgba(255, 100, 100, 0.4);
+  display: none;
+  z-index: 6;
+}
+ 
+#loop-badge.show {
+  display: block;
+}
+ 
+/* ─────────────────────────────────────────────
+   RESPONSIVE TWEAKS
+   ───────────────────────────────────────────── */
+@media (max-width: 520px) {
+  #time-label {
+    display: none;
+  }
+ 
+  #play-pause {
+    width: 36px;
+    height: 36px;
+  }
+}
+ 

@@ -31,11 +31,32 @@
     </aside>
 
     <section class="content-area">
-      <div class="content-card">
-        <h2>New Recording Workspace</h2>
-        <p>This page is ready for your create flow.</p>
+ 
+  <!-- The main canvas -->
+  <div class="content-card" id="contentCard">
+  </div>
+ 
+  <!-- Transport bar — sits snug under the content card -->
+  <div class="transport-bar">
+ 
+    <!-- Row 1: play/pause · scrubber · time -->
+    <div class="transport-controls">
+      <button id="play-pause" title="Play / Pause">&#9654;</button>
+      <input type="range" id="scrubber" min="0" max="600" value="0" step="1">
+      <span id="time-label">0.0 / 6.0s</span>
+    </div>
+ 
+    <!-- Row 2: ruler with tick marks (built by JS) -->
+    <div id="ruler-wrap">
+      <div id="ruler-track">
+        <div id="ruler-fill"></div>
       </div>
-    </section>
+      <!-- tick marks injected here by buildRuler() -->
+    </div>
+ 
+  </div>
+ 
+</section>
   </main>
 
   <div id="tourOverlay" class="tour-overlay hidden">
