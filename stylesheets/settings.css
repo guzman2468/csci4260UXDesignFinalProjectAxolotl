@@ -113,6 +113,24 @@ body {
   box-shadow: 0 0 0 3px rgba(11, 120, 227, 0.12);
 }
 
+.setting-row input[type="number"] {
+  width: 100%;
+  height: 46px;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  padding: 0 40px 0 14px; /* extra space for arrows */
+  font-size: 1rem;
+  background: #ffffff;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus state */
+.setting-row input[type="number"]:focus {
+  border-color: #0b78e3;
+  box-shadow: 0 0 0 3px rgba(11, 120, 227, 0.12);
+}
+
 @media (max-width: 640px) {
   .settings-card {
     padding: 28px 20px 24px;
