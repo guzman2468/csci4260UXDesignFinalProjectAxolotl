@@ -177,3 +177,28 @@ body {
     font-size: 1rem;
   }
 }
+
+.save-btn {
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 8px;
+  background: #0b78e3;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.save-btn:hover {
+  background: #0868c4;
+}
+
+.save-message {
+  min-height: 22px;
+  text-align: center;
+  color: #128a3f;
+  font-size: 0.95rem;
+  margin-top: 12px;
+}

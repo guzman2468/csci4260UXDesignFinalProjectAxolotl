@@ -3,6 +3,9 @@ const soundPresetEl = document.getElementById("soundPreset");
 const volumeEl      = document.getElementById("volume");
 const lengthEl       = document.getElementById("length");
 const reverbEl      = document.getElementById("reverb");
+const saveSettingsBtn = document.getElementById("saveSettingsBtn");
+const saveMessage = document.getElementById("saveMessage");
+
 
 const VOLUME_MAP = {
   "Low":    0.3,
@@ -20,12 +23,6 @@ if (saved.length)      lengthEl.value       = saved.length;
 if (saved.reverb)      reverbEl.value      = saved.reverb;
 
 closeBtn.addEventListener("click", function () {
-  sessionStorage.setItem("axolotlSettings", JSON.stringify({
-    soundPreset: soundPresetEl.value,
-    volume:      volumeEl.value,
-    length:       lengthEl.value,
-    reverb:      reverbEl.value
-  }));
   window.location.href = "createPage.html";
 });
 
@@ -35,3 +32,21 @@ const profileLetter = document.getElementById("profileLetter");
 if (savedEmail && profileLetter) {
   profileLetter.textContent = savedEmail.charAt(0).toUpperCase();
 }
+
+saveSettingsBtn.addEventListener("click", function () {
+  const settings = {
+    soundPreset: soundPresetEl.value,
+    volume: volumeEl.value,
+    volumeValue: VOLUME_MAP[volumeEl.value],
+    length: lengthEl.value,
+    reverb: reverbEl.value
+  };
+
+  sessionStorage.setItem("axolotlSettings", JSON.stringify(settings));
+
+  saveMessage.textContent = "Settings saved.";
+
+  setTimeout(function () {
+    saveMessage.textContent = "";
+  }, 2500);
+});
