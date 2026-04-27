@@ -33,6 +33,23 @@ if (savedEmail && profileLetter) {
   profileLetter.textContent = savedEmail.charAt(0).toUpperCase();
 }
 
+profileIcon.addEventListener("click", function (event) {
+  event.stopPropagation();
+  profileDropdown.classList.toggle("hidden");
+});
+
+logoutBtn.addEventListener("click", function () {
+  localStorage.removeItem("loggedInEmail");
+  sessionStorage.removeItem("axolotlSettings");
+  window.location.href = "login.html";
+});
+
+document.addEventListener("click", function (event) {
+  if (!profileIcon.contains(event.target) && !profileDropdown.contains(event.target)) {
+    profileDropdown.classList.add("hidden");
+  }
+});
+
 saveSettingsBtn.addEventListener("click", function () {
   const settings = {
     soundPreset: soundPresetEl.value,
