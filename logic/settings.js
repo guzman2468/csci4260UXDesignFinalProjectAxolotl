@@ -28,3 +28,10 @@ closeBtn.addEventListener("click", function () {
   }));
   window.location.href = "createPage.html";
 });
+
+const savedEmail = localStorage.getItem("loggedInEmail");
+const profileLetter = document.getElementById("profileLetter");
+
+if (savedEmail && profileLetter) {
+  profileLetter.textContent = savedEmail.charAt(0).toUpperCase();
+}

@@ -114,6 +114,8 @@ loginForm.addEventListener("submit", async function (event) {
   if (!data || data.length === 0) {
     alert("Login failed");
   } else {
+    localStorage.setItem("loggedInEmail", email);
+
     alert("Login successful");
     window.location.href = "dashboard.html";
   }
