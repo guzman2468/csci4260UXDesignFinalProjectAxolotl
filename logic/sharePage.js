@@ -39,7 +39,8 @@ async function loadProject() {
 
   currentProject = data;
   recordingTitle.textContent = data.name;
-  shareLink.value = `${window.location.origin}/webpages/viewProject.html?id=${data.id}`;
+  const basePath = window.location.pathname.split("/webpages/")[0];
+  shareLink.value = `${window.location.origin}${basePath}/webpages/viewProject.html?id=${data.id}`;
 }
 
 
