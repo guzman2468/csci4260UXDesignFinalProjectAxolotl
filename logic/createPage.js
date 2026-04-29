@@ -1,3 +1,10 @@
+const supabaseUrl = "https://ogizpqbereqnqcxihkfp.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9naXpwcWJlcmVxbnFjeGloa2ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDEyODIsImV4cCI6MjA5MTA3NzI4Mn0.8cWpsMa2pj4-olPORCdzvb4V--UgT9SeceDa1LRErGI";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+const params = new URLSearchParams(window.location.search);
+const projectId = params.get("id");
+
 const recordBtn = document.getElementById("recordBtn");
 const settingsBtn = document.getElementById("settingsBtn");
 const exitBtn = document.getElementById("exitBtn");
@@ -12,6 +19,127 @@ const tourTitle = document.getElementById("tourTitle");
 const tourText = document.getElementById("tourText");
 const tourNextBtn = document.getElementById("tourNextBtn");
 const tourCloseBtn = document.getElementById("tourCloseBtn");
+// ─────────────────────────────────────────────
+// SAVE PROJECT
+// ─────────────────────────────────────────────
+
+const saveBtn = document.getElementById("saveBtn");
+const saveModal = document.getElementById("saveModal");
+const projectNameInput = document.getElementById("projectNameInput");
+const saveConfirmBtn = document.getElementById("saveConfirmBtn");
+const saveCancelBtn = document.getElementById("saveCancelBtn");
+
+console.log("saveModal:", saveModal);
+console.log("saveConfirmBtn:", saveConfirmBtn);
+console.log("saveCancelBtn:", saveCancelBtn);
+
+if (saveBtn) {
+  saveBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    console.log("Save btn clicked");
+    console.log("saveModal before:", saveModal.classList.toString());
+    projectNameInput.value = "";
+    projectNameInput.style.border = "";
+    saveModal.classList.remove("hidden");
+    console.log("saveModal after:", saveModal.classList.toString());
+    projectNameInput.focus();
+  });
+}
+
+saveCancelBtn.addEventListener("click", function () {
+  saveModal.classList.add("hidden");
+});
+
+saveConfirmBtn.addEventListener("click", saveProject);
+
+
+async function saveProject() {
+  const name = projectNameInput.value.trim();
+
+  if (!name) {
+    projectNameInput.style.border = "2px solid red";
+    return;
+  }
+
+  try {
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+      alert("You must be logged in to save.");
+      return;
+    }
+
+    const projectData = {
+      notes: notes.map(n => ({
+        time: n.time,
+        x: n.x,
+        y: n.y,
+        preset: n.preset,
+        color: n.color,
+        isHold: n.isHold || false,
+        duration: n.duration || 0
+      })),
+      preset: currentPreset,
+      loopDuration: currentLoopDuration
+    };
+
+    const { data, error } = await supabaseClient
+      .from("projects")
+      .insert([{
+        user_id: user.id,
+        name: name,
+        data: projectData
+      }]);
+
+    if (error) {
+      console.error("Save error:", error);
+      alert("Failed to save project");
+      return;
+    }
+
+    saveModal.classList.add("hidden");
+    alert(`"${name}" saved!`);
+
+  } catch (err) {
+    console.error(err);
+    alert("Unexpected error saving project");
+  }
+}
+
+async function loadProject() {
+  if (!projectId) return;
+
+  const { data, error } = await supabaseClient
+    .from("projects")
+    .select("*")
+    .eq("id", projectId)
+    .single();
+
+  if (error) {
+    console.error(error);
+    alert("Failed to load project");
+    return;
+  }
+
+  console.log("Loaded project:", data);
+
+  notes = (data.data.notes || []).map(n => ({
+    ...n,
+    el: null,
+    lastFired: -1,
+    firedSlots: new Set()
+  }));
+
+  currentPreset = data.data.preset || "acoustic";
+  currentLoopDuration = data.data.loopDuration || 6;
+
+  notes.forEach(note => {
+    note.el = createNoteDot(note);
+  });
+}
+
+loadProject();
+
 // ─────────────────────────────────────────────
 // SETTINGS
 // ─────────────────────────────────────────────
@@ -55,6 +183,7 @@ settingsBtn.addEventListener("click", function () {
 });
 
 exitBtn.addEventListener("click", function () {
+  sessionStorage.removeItem("axolotlNotes");
   window.location.href = "dashboard.html";
 });
 

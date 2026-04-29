@@ -5,19 +5,46 @@ const downloadBtn = document.getElementById("downloadBtn");
 const statusText = document.getElementById("statusText");
 const closeBtn = document.getElementById("closeBtn");
 
+const supabaseUrl = "https://ogizpqbereqnqcxihkfp.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9naXpwcWJlcmVxbnFjeGloa2ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDEyODIsImV4cCI6MjA5MTA3NzI4Mn0.8cWpsMa2pj4-olPORCdzvb4V--UgT9SeceDa1LRErGI";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+console.log("sharePage loaded");
+console.log("Full URL:", window.location.href);
+console.log("Search params:", window.location.search);
 const params = new URLSearchParams(window.location.search);
-const titleFromUrl = params.get("title");
+const projectId = params.get("id");
+console.log("Project ID:", projectId);
 
-if (titleFromUrl) {
-  recordingTitle.textContent = titleFromUrl;
-  const slug = titleFromUrl
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+let currentProject = null;
 
-  shareLink.value = "https://axolotl.app/share/" + slug;
+
+async function loadProject() {
+  if (!projectId) {
+    statusText.textContent = "Missing project ID";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("projects")
+    .select("*")
+    .eq("id", projectId)
+    .single();
+
+  if (error) {
+    console.error(error);
+    statusText.textContent = "Project not found";
+    return;
+  }
+
+  currentProject = data;
+  recordingTitle.textContent = data.name;
+  shareLink.value = `${window.location.origin}/webpages/viewProject.html?id=${data.id}`;
 }
+
+
+loadProject();
+
 
 copyBtn.addEventListener("click", async function () {
   try {

@@ -98,25 +98,24 @@ loginForm.addEventListener("submit", async function (event) {
   if (!isValid) return;
 
 
-  const { data, error } = await supabaseClient
-    .from("users")
-    .select("*")
-    .eq("email", email)
-    .eq("password", password)
-    .limit(1);
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
 
   if (error) {
     console.error(error);
-    alert("Query failed: " + error.message);
+    alert("Login failed: " + error.message);
     return;
   }
 
-  if (!data || data.length === 0) {
-    alert("Login failed");
-  } else {
-    localStorage.setItem("loggedInEmail", email);
+  if (!data.session) {
+  alert("Login failed: no session created");
+  return;
+}
 
-    alert("Login successful");
-    window.location.href = "dashboard.html";
-  }
+localStorage.setItem("loggedInEmail", email);
+
+alert("Login successful");
+window.location.href = "dashboard.html";
 });

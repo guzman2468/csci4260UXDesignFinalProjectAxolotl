@@ -31,26 +31,12 @@
         <div class="col-title">Title</div>
         <div class="col-date">Date</div>
         <div class="col-share">Share</div>
+        <div class="col-delete">Delete</div>
       </div>
 
+      <!-- ONLY THIS stays empty -->
       <div class="table-body" id="recordingsTable">
-        <div class="table-row">
-          <div class="col-title">Ocean Ambience Mix</div>
-          <div class="col-date">04/13/2026</div>
-          <div class="col-share"><button class="share-btn">Share</button></div>
-        </div>
-
-        <div class="table-row">
-          <div class="col-title">Morning Practice Session</div>
-          <div class="col-date">04/11/2026</div>
-          <div class="col-share"><button class="share-btn">Share</button></div>
-        </div>
-
-        <div class="table-row">
-          <div class="col-title">Synth Demo Recording</div>
-          <div class="col-date">04/08/2026</div>
-          <div class="col-share"><button class="share-btn">Share</button></div>
-        </div>
+        <!-- JS will inject rows here -->
       </div>
     </section>
     <section class="auth-footer">
@@ -60,6 +46,16 @@
       <button class="auth-btn sign-up">Sign Up</button>
     </section>
   </main>
+  <div id="deleteModal" class="delete-modal hidden">
+    <div class="delete-modal-card">
+      <h2 id="deleteModalTitle">Delete this project?</h2>
+      <p>This cannot be undone.</p>
+      <div class="delete-modal-buttons">
+        <button id="deleteConfirmBtn">Delete</button>
+        <button id="deleteCancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <div id="tourOverlay" class="tour-overlay hidden">
   <div id="tourHighlight" class="tour-highlight"></div>

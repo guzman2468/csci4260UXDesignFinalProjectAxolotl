@@ -128,14 +128,10 @@ signupForm.addEventListener("submit", async function (event) {
 
   if (!isValid) return;
 
-  const { data, error } = await supabaseClient
-    .from("users")
-    .insert([
-      {
-        email: email,
-        password: password
-      }
-    ]);
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password
+  });
 
   if (error) {
     console.error(error);
@@ -145,4 +141,22 @@ signupForm.addEventListener("submit", async function (event) {
 
   signupSuccess.textContent = "Account created!";
   alert("Signup successful");
+
+  // const { data, error } = await supabaseClient
+  //   .from("users")
+  //   .insert([
+  //     {
+  //       email: email,
+  //       password: password
+  //     }
+  //   ]);
+
+  // if (error) {
+  //   console.error(error);
+  //   alert(error.message);
+  //   return;
+  // }
+
+  // signupSuccess.textContent = "Account created!";
+  // alert("Signup successful");
 });

@@ -1,6 +1,5 @@
 const createBtn = document.getElementById("createBtn");
 const recordingsBtn = document.getElementById("recordingsBtn");
-const shareButtons = document.querySelectorAll(".share-btn");
 const signInBtn = document.querySelector(".sign-in");
 const signUpBtn = document.querySelector(".sign-up");
 
@@ -21,6 +20,106 @@ const tourNextBtn = document.getElementById("tourNextBtn");
 const tourCloseBtn = document.getElementById("tourCloseBtn");
 
 
+const supabaseUrl = "https://ogizpqbereqnqcxihkfp.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9naXpwcWJlcmVxbnFjeGloa2ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDEyODIsImV4cCI6MjA5MTA3NzI4Mn0.8cWpsMa2pj4-olPORCdzvb4V--UgT9SeceDa1LRErGI";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+const tableBody = document.getElementById("recordingsTable");
+
+async function loadProjects() {
+  const { data: userData } = await supabaseClient.auth.getUser();
+
+  const user = userData?.user;
+
+  if (!user) {
+    console.log("No logged in user");
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("projects")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  tableBody.innerHTML = "";
+
+  data.forEach(project => {
+    const row = document.createElement("div");
+    row.className = "table-row";
+
+    row.innerHTML = `
+      <div class="col-title">${project.name}</div>
+      <div class="col-date">${new Date(project.created_at).toLocaleDateString()}</div>
+      <div class="col-share">
+        <button class="share-btn">Share</button>
+      </div>
+      <div class="col-delete">
+        <button class="delete-btn">Delete</button>
+      </div>
+    `;
+
+    row.dataset.id = project.id;
+
+    // OPEN PROJECT
+    row.addEventListener("click", () => {
+      window.location.href = `createPage.html?id=${project.id}`;
+    });
+
+    // SHARE BUTTON (IMPORTANT: stop row click)
+    row.querySelector(".share-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = `sharePage.html?id=${project.id}`;
+    });
+
+    row.querySelector(".delete-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteModal.dataset.projectId = project.id;
+      deleteModal.dataset.projectName = project.name;
+      deleteModalTitle.textContent = `Delete "${project.name}"?`;
+      deleteModal.classList.remove("hidden");
+    });
+
+    tableBody.appendChild(row);
+  });
+}
+
+loadProjects();
+
+
+const deleteModal = document.getElementById("deleteModal");
+const deleteModalTitle = document.getElementById("deleteModalTitle");
+const deleteConfirmBtn = document.getElementById("deleteConfirmBtn");
+const deleteCancelBtn = document.getElementById("deleteCancelBtn");
+
+deleteCancelBtn.addEventListener("click", function () {
+  deleteModal.classList.add("hidden");
+});
+
+deleteConfirmBtn.addEventListener("click", async function () {
+  const projectId = deleteModal.dataset.projectId;
+
+  const { error } = await supabaseClient
+    .from("projects")
+    .delete()
+    .eq("id", projectId);
+
+  if (error) {
+    console.error(error);
+    alert("Failed to delete project.");
+    return;
+  }
+
+  deleteModal.classList.add("hidden");
+  loadProjects();
+});
+
 createBtn.addEventListener("click", function () {
   window.location.href = "createPage.html";
 });
@@ -29,13 +128,6 @@ recordingsBtn.addEventListener("click", function () {
   window.location.href = "recordings.html";
 });
 
-shareButtons.forEach(function (button) {
-  button.addEventListener("click", function () {
-    const row = button.closest(".table-row");
-    const title = row.querySelector(".col-title").textContent.trim();
-    window.location.href = "sharePage.html?title=" + encodeURIComponent(title);
-  });
-});
 
 const tourSteps = [
   {

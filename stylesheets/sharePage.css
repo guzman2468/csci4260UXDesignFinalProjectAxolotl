@@ -10,6 +10,30 @@ body {
   background: #3f6fe8;
   color: #222;
 }
+#saveBtn {
+  display: block;
+  margin: 8px auto 0;
+  padding: 12px 32px;
+  border-radius: 12px;
+  border: 2px solid #0b78e3;
+  background: #ffffff;
+  color: #0b78e3;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(11, 120, 227, 0.2);
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  letter-spacing: 0.4px;
+}
+
+#saveBtn:hover {
+  background: #f0f6ff;
+  box-shadow: 0 6px 18px rgba(11, 120, 227, 0.3);
+}
+
+#saveBtn:active {
+  transform: scale(0.96);
+}
 
 .top-bar {
   position: relative;
