@@ -32,6 +32,7 @@ const saveCancelBtn = document.getElementById("saveCancelBtn");
 console.log("saveModal:", saveModal);
 console.log("saveConfirmBtn:", saveConfirmBtn);
 console.log("saveCancelBtn:", saveCancelBtn);
+let recordingStartTime = 0;
 
 if (saveBtn) {
   saveBtn.addEventListener("click", function (e) {
@@ -171,14 +172,77 @@ recordBtn.addEventListener("click",   () => sideMenu.classList.remove("show"));
 settingsBtn.addEventListener("click", () => sideMenu.classList.remove("show"));
 exitBtn.addEventListener("click",     () => sideMenu.classList.remove("show"));
 
-recordBtn.addEventListener("click", function () {
+let mediaRecorder = null;
+let recordedChunks = [];
+
+recordBtn.addEventListener("click", async function () {
   const isRecording = recordBtn.classList.toggle("recording-active");
   recordBtn.textContent = isRecording ? "Recording" : "Record";
   recordModal.classList.toggle("show", isRecording);
+
+  if (isRecording) {
+    try {
+      const ctx = getCtx();
+      if (ctx.state === "suspended") await ctx.resume();
+
+      const master = getMaster();
+      const dest = ctx.createMediaStreamDestination();
+      
+      // Connect master to recorder
+      master.connect(dest);
+      window._recordDest = dest;
+
+      // Auto start loop if not running
+      if (!loopRunning) {
+        startLoop();
+        playPauseBtn.innerHTML = "&#10074;&#10074;";
+      }
+
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(dest.stream);
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        // Disconnect recorder from master
+        try { master.disconnect(dest); } catch(e) {}
+        const blob = new Blob(recordedChunks, { type: "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "recording.webm";
+        a.click();
+        URL.revokeObjectURL(url);
+        window._recordDest = null;
+      };
+
+      mediaRecorder.start();
+
+    } catch (err) {
+      console.error("Recording failed:", err);
+      recordBtn.classList.remove("recording-active");
+      recordBtn.textContent = "Record";
+      recordModal.classList.remove("show");
+    }
+
+  } else {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+    }
+  }
 });
 
 settingsBtn.addEventListener("click", function () {
   sessionStorage.setItem("axolotlNotes", JSON.stringify(notes));
+
+  // Save recording state
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.pause();
+    sessionStorage.setItem("axolotlWasRecording", "true");
+  }
+
   window.location.href = "settings.html";
 });
 
@@ -211,6 +275,18 @@ function getCtx() {
   return audioCtx;
 }
 
+let masterGain = null;
+
+function getMaster() {
+  if (!masterGain) {
+    const ctx = getCtx();
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 1;
+    masterGain.connect(ctx.destination);
+  }
+  return masterGain;
+}
+
 const audioBuffers = {};
 
 async function loadSample(name, url) {
@@ -222,14 +298,26 @@ async function loadSample(name, url) {
 
 async function loadAllSamples() {
   await Promise.all([
-    loadSample("kick",     "../sounds/kick.wav"),
-    loadSample("snare",    "../sounds/snare.wav"),
-    loadSample("hihat",    "../sounds/hihat.wav"),
-    loadSample("clap",     "../sounds/clap.wav"),
-    loadSample("ac_hihat", "../sounds/acoustic_highhat.mp3"),
-    loadSample("ac_kick",  "../sounds/acoustic_kick.mp3"),
-    loadSample("ac_snare", "../sounds/acoustic_snare.mp3"),
-    loadSample("F_drum",   "../sounds/F_drum.mp3"),
+    loadSample("dr1_kick",     "../sounds/drums/kick.wav"),
+    loadSample("dr1_snare",    "../sounds/drums/snare.wav"),
+    loadSample("dr1_hihat",    "../sounds/drums/hihat.wav"),
+    loadSample("dr1_clap",     "../sounds/drums/clap.wav"),
+    loadSample("ac_hihat", "../sounds/acoustic/acoustic_highhat.mp3"),
+    loadSample("ac_kick",  "../sounds/acoustic/acoustic_kick.mp3"),
+    loadSample("ac_snare", "../sounds/acoustic/acoustic_snare.mp3"),
+    loadSample("F_drum",   "../sounds/acoustic/F_drum.mp3"),
+    loadSample("dr2_clap", "../sounds/drum2/Drum Clap.wav"),
+    loadSample("dr2_hat",  "../sounds/drum2/Drum Hat.wav"),
+    loadSample("dr2_snare", "../sounds/drum2/Drum snare.wav"),
+    loadSample("dr2_snare2",   "../sounds/drum2/Drum snare 2.wav"),
+    loadSample("el_guitar", "../sounds/electric/Electric Guitar.wav"),
+    loadSample("el_piano",  "../sounds/electric/Electric Piano.wav"),
+    loadSample("piano", "../sounds/electric/Piano.wav"),
+    loadSample("el_808",   "../sounds/electric/808.wav"),
+    loadSample("synth_bass", "../sounds/synth/Bass Synth.wav"),
+    loadSample("synth_kick",  "../sounds/synth/kick.wav"),
+    loadSample("synth", "../sounds/synth/Synth.wav"),
+    loadSample("synth_violin",   "../sounds/synth/Violin Synth.wav"),
   ]);
 }
 
@@ -249,8 +337,9 @@ function play(name, time, rate = 1, vol = globalVolume) {
   gain.gain.value        = vol;
 
   src.connect(gain);
-  gain.connect(ctx.destination);
-  src.start(time);
+  gain.connect(getMaster());
+
+  src.start(Math.max(time, ctx.currentTime));
 }
 
 // ─────────────────────────────────────────────
@@ -259,10 +348,10 @@ function play(name, time, rate = 1, vol = globalVolume) {
 const PRESETS = {
   drums: {
     play(y, time) {
-      if      (y < 0.25) play("hihat", time);
-      else if (y < 0.5)  play("clap",  time);
-      else if (y < 0.75) play("snare", time);
-      else               play("kick",  time);
+      if      (y < 0.25) play("dr1_hihat", time);
+      else if (y < 0.5)  play("dr1_clap",  time);
+      else if (y < 0.75) play("dr1_snare", time);
+      else               play("dr1_kick",  time);
     }
   },
   acoustic: {
@@ -271,6 +360,30 @@ const PRESETS = {
       else if (y < 0.5)  play("ac_kick",  time);
       else if (y < 0.75) play("ac_snare", time);
       else               play("F_drum",   time);
+    }
+  },
+  drums2: {
+    play(y, time) {
+      if      (y < 0.25) play("dr2_clap", time);
+      else if (y < 0.5)  play("dr2_hat",  time);
+      else if (y < 0.75) play("dr2_snare", time);
+      else               play("dr2_snare2",   time);
+    }
+  },
+  electric: {
+    play(y, time) {
+      if      (y < 0.25) play("el_guitar", time);
+      else if (y < 0.5)  play("el_piano",  time);
+      else if (y < 0.75) play("piano", time);
+      else               play("el_808",   time);
+    }
+  },
+  synth: {
+    play(y, time) {
+      if      (y < 0.25) play("synth_kick", time);
+      else if (y < 0.5)  play("synth_violin",  time);
+      else if (y < 0.75) play("synth", time);
+      else               play("synth_bass",   time);
     }
   }
 };
@@ -288,10 +401,28 @@ function getSoundNameForPreset(preset, y) {
     return "F_drum";
   }
   if (preset === "drums") {
-    if (y < 0.25) return "hihat";
-    if (y < 0.5)  return "clap";
-    if (y < 0.75) return "snare";
-    return "kick";
+    if (y < 0.25) return "dr1_hihat";
+    if (y < 0.5)  return "dr1_clap";
+    if (y < 0.75) return "dr1_snare";
+    return "dr1_kick";
+  }
+  if (preset === "drums2") {
+    if (y < 0.25) return "dr2_clap";
+    if (y < 0.5)  return "dr2_hat";
+    if (y < 0.75) return "dr2_snare";
+    return "dr2_snare2";
+  }
+  if (preset === "electric") {
+    if (y < 0.25) return "el_guitar";
+    if (y < 0.5)  return "el_piano";
+    if (y < 0.75) return "piano";
+    return "el_808";
+  }
+  if (preset === "synth") {
+    if (y < 0.25) return "synth_kick";
+    if (y < 0.5)  return "synth_violin";
+    if (y < 0.75) return "synth";
+    return "synth_bass";
   }
   return null;
 }
@@ -479,6 +610,8 @@ function buildRuler() {
   const wrap      = document.getElementById("ruler-wrap");
   const tickCount = 6;
 
+  wrap.querySelectorAll(".tick-mark").forEach(t => t.remove());
+
   for (let i = 0; i <= tickCount; i++) {
     const pct  = i / tickCount;
     const sec  = (pct * currentLoopDuration).toFixed(1);
@@ -507,7 +640,7 @@ function startHoldAudio(y) {
     src.buffer      = buffer;
     gain.gain.value = globalVolume;
     src.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(getMaster());
     src.start();
   }
 
@@ -681,18 +814,26 @@ function schedule() {
   updateTransport();
   if (!loopRunning) return;
 
-  const ctx          = getCtx();
-  const now          = ctx.currentTime;
-  const elapsed      = now - loopStartTime;
+  const ctx = getCtx();
+  const now = ctx.currentTime;
+
+  const isRecording = mediaRecorder && mediaRecorder.state === "recording";
+
+  // ✅ KEY FIX: use recording timeline when recording
+  const baseTime = isRecording ? recordingStartTime : loopStartTime;
+
+  const elapsed = now - baseTime;
   const currentCycle = Math.floor(elapsed / currentLoopDuration);
-  const lookAhead    = 0.1;
+
+  // tighter timing while recording
+  const lookAhead = isRecording ? 0.05 : 0.15;
 
   for (const note of notes) {
 
     // ── TAP NOTE ──
     if (!note.isHold) {
       const scheduledTime =
-        loopStartTime +
+        baseTime +
         currentCycle * currentLoopDuration +
         note.time;
 
@@ -703,6 +844,7 @@ function schedule() {
       ) {
         note.lastFired = currentCycle;
         PRESETS[note.preset].play(note.y, scheduledTime);
+
         const delay = (scheduledTime - now) * 1000;
         setTimeout(() => spawnHit(note.x, note.y, note.color), delay);
       }
@@ -712,33 +854,38 @@ function schedule() {
     // ── HOLD NOTE ──
     if (note.duration <= 0) continue;
 
-    const name   = getSoundNameForPreset(note.preset, note.y);
+    const name = getSoundNameForPreset(note.preset, note.y);
     const buffer = audioBuffers[name];
     if (!buffer) continue;
 
     const sampleDuration = buffer.duration;
-    const cycleStart     = loopStartTime + currentCycle * currentLoopDuration;
-    const holdStart      = cycleStart + note.time;
-    const holdEnd        = cycleStart + Math.min(note.time + note.duration, currentLoopDuration);
+
+    // ✅ FIXED: use baseTime here too
+    const cycleStart = baseTime + currentCycle * currentLoopDuration;
+    const holdStart = cycleStart + note.time;
+    const holdEnd = cycleStart + Math.min(note.time + note.duration, currentLoopDuration);
 
     let t = holdStart;
+
     while (t < holdEnd) {
       if (t >= now && t < now + lookAhead) {
-        const slotIndex = Math.round((t - loopStartTime) / sampleDuration);
-        const slotKey   = `${currentCycle}-${slotIndex}`;
+        const slotIndex = Math.round((t - cycleStart) / sampleDuration);
+        const slotKey = `${currentCycle}-${slotIndex}`;
 
         if (!note.firedSlots) note.firedSlots = new Set();
 
         if (!note.firedSlots.has(slotKey)) {
           note.firedSlots.add(slotKey);
 
-          const src  = ctx.createBufferSource();
+          const src = ctx.createBufferSource();
           const gain = ctx.createGain();
-          src.buffer      = buffer;
-          src.loop        = false;
+
+          src.buffer = buffer;
           gain.gain.value = globalVolume;
+
           src.connect(gain);
-          gain.connect(ctx.destination);
+          gain.connect(getMaster());
+
           src.start(t);
 
           const delay = (t - now) * 1000;
@@ -748,9 +895,14 @@ function schedule() {
       t += sampleDuration;
     }
 
-    // Trim old slot keys to prevent memory growth
-    if (note.firedSlots && note.firedSlots.size > 2000) {
-      note.firedSlots.clear();
+    // cleanup old slots
+    if (note.firedSlots && note.firedSlots.size > 500) {
+      const keysToDelete = [];
+      note.firedSlots.forEach(k => {
+        const cycle = parseInt(k.split("-")[0]);
+        if (cycle < currentCycle - 1) keysToDelete.push(k);
+      });
+      keysToDelete.forEach(k => note.firedSlots.delete(k));
     }
   }
 
@@ -761,10 +913,17 @@ function schedule() {
 // LOOP CONTROL
 // ─────────────────────────────────────────────
 function startLoop() {
-  const ctx     = getCtx();
+  const ctx = getCtx();
   loopRunning   = true;
   loopStartTime = ctx.currentTime - pausedLoopTime;
   playPauseBtn.innerHTML = "&#10074;&#10074;";
+
+  // Reset all notes so nothing gets skipped
+  notes.forEach(n => {
+    n.lastFired = -1;
+    if (n.firedSlots) n.firedSlots.clear();
+  });
+
   schedule();
 }
 
@@ -803,10 +962,18 @@ scrubberEl.addEventListener("input", function () {
   highlightNearDots(lt);
 
   if (loopRunning) {
-    const ctx     = getCtx();
+    const ctx = getCtx();
     loopStartTime = ctx.currentTime - lt;
+
+    // Reset ALL notes fully
     notes.forEach(n => {
-      n.lastFired = Math.floor((ctx.currentTime - loopStartTime) / currentLoopDuration) - 1;
+      n.lastFired = -1;
+      if (n.firedSlots) n.firedSlots.clear();
+    });
+  } else {
+    // Also reset when paused so resuming plays correctly
+    notes.forEach(n => {
+      n.lastFired = -1;
       if (n.firedSlots) n.firedSlots.clear();
     });
   }
@@ -833,9 +1000,9 @@ function loadNotes() {
 // ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────
+applySettings();
 buildRuler();
 loadAllSamples();
-applySettings();
 loadNotes();
 
 
@@ -968,6 +1135,48 @@ window.addEventListener("load", function () {
 
   if (!hasSeenTour) {
     startTour();
+  }
+  // Resume recording if we were recording before going to settings
+  if (sessionStorage.getItem("axolotlWasRecording") === "true") {
+    sessionStorage.removeItem("axolotlWasRecording");
+    
+    // Show the recording UI
+    recordBtn.classList.add("recording-active");
+    recordBtn.textContent = "Recording";
+    recordModal.classList.add("show");
+
+    // Start a fresh recording session
+    const ctx = getCtx();
+    const dest = ctx.createMediaStreamDestination();
+    window._recordDest = dest;
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(dest.stream);
+
+    // ✅ anchor recording timeline
+    recordingStartTime = ctx.currentTime;
+
+    // reset notes so scheduling is clean
+    notes.forEach(n => {
+      n.lastFired = -1;
+      if (n.firedSlots) n.firedSlots.clear();
+    });
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: "audio/webm" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "recording.webm";
+      a.click();
+      URL.revokeObjectURL(url);
+      window._recordDest = null;
+    };
+
+    mediaRecorder.start();
   }
 });
 

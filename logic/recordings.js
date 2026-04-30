@@ -1,137 +1,132 @@
-const shareButtons = document.querySelectorAll(".share-btn");
+const supabaseUrl = "https://ogizpqbereqnqcxihkfp.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9naXpwcWJlcmVxbnFjeGloa2ZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDEyODIsImV4cCI6MjA5MTA3NzI4Mn0.8cWpsMa2pj4-olPORCdzvb4V--UgT9SeceDa1LRErGI";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+const tableBody = document.getElementById("recordingsTable");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const pageLabel = document.getElementById("pageLabel");
 const closeBtn = document.getElementById("closeBtn");
+const deleteModal = document.getElementById("deleteModal");
+const deleteModalTitle = document.getElementById("deleteModalTitle");
+const deleteConfirmBtn = document.getElementById("deleteConfirmBtn");
+const deleteCancelBtn = document.getElementById("deleteCancelBtn");
 
-shareButtons.forEach(function (button) {
-  button.addEventListener("click", function () {
-    const row = button.closest(".table-row");
-    const title = row.querySelector(".col-title").textContent.trim();
-    window.location.href = "sharePage.html?title=" + encodeURIComponent(title);
-  });
-});
+const PAGE_SIZE = 10;
+let currentPage = 0;
+let totalCount = 0;
 
-closeBtn.addEventListener("click", function () {
-  window.location.href = "dashboard.html";
-});
+async function loadProjects() {
+  const { data: userData } = await supabaseClient.auth.getUser();
+  const user = userData?.user;
 
-const tourOverlay = document.getElementById("tourOverlay");
-const tourHighlight = document.getElementById("tourHighlight");
-const tourPopup = document.getElementById("tourPopup");
-const tourTitle = document.getElementById("tourTitle");
-const tourText = document.getElementById("tourText");
-const tourNextBtn = document.getElementById("tourNextBtn");
-const tourCloseBtn = document.getElementById("tourCloseBtn");
-
-const tourSteps = [
-  {
-    element: ".table-card",
-    title: "Recordings Table",
-    text: "This is where all your saved recordings are displayed."
-  },
-  {
-    element: ".col-title",
-    title: "Title Column",
-    text: "Each row shows the name of your recording."
-  },
-  {
-    element: ".col-date",
-    title: "Date Column",
-    text: "This shows when the recording was created."
-  },
-  {
-    element: ".share-btn",
-    title: "Share Button",
-    text: "Click this to open the share page for that recording."
-  }
-];
-
-let currentTourStep = 0;
-
-function positionTour(step) {
-  const target = document.querySelector(step.element);
-  if (!target) return;
-
-  const rect = target.getBoundingClientRect();
-  const padding = 8;
-
-  tourHighlight.style.top = rect.top - padding + "px";
-  tourHighlight.style.left = rect.left - padding + "px";
-  tourHighlight.style.width = rect.width + padding * 2 + "px";
-  tourHighlight.style.height = rect.height + padding * 2 + "px";
-
-  tourTitle.textContent = step.title;
-  tourText.textContent = step.text;
-
-  tourPopup.classList.remove("hidden");
-
-  let top = rect.bottom + 16;
-  let left = rect.left;
-
-  if (left + 320 > window.innerWidth - 16) {
-    left = window.innerWidth - 336;
-  }
-
-  if (top + 200 > window.innerHeight) {
-    top = rect.top - 200;
-  }
-
-  if (top < 16) {
-    top = 16;
-  }
-
-  if (left < 16) {
-    left = 16;
-  }
-
-  tourPopup.style.top = top + "px";
-  tourPopup.style.left = left + "px";
-}
-
-function showTourStep() {
-  positionTour(tourSteps[currentTourStep]);
-}
-
-function startTour() {
-  tourOverlay.classList.remove("hidden");
-  currentTourStep = 0;
-  showTourStep();
-}
-
-function endTour() {
-  tourOverlay.classList.add("hidden");
-  tourPopup.classList.add("hidden");
-  localStorage.setItem("axolotlRecordingsTourSeen", "true");
-}
-
-tourNextBtn.addEventListener("click", function () {
-  currentTourStep++;
-
-  if (currentTourStep >= tourSteps.length) {
-    endTour();
+  if (!user) {
+    tableBody.innerHTML = "<div style='padding: 20px;'>Please log in to view your projects.</div>";
     return;
   }
 
-  showTourStep();
-});
+  const from = currentPage * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
 
-tourCloseBtn.addEventListener("click", function () {
-  endTour();
-});
+  const { data, error, count } = await supabaseClient
+    .from("projects")
+    .select("*", { count: "exact" })
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
-window.addEventListener("resize", function () {
-  if (!tourOverlay.classList.contains("hidden")) {
-    showTourStep();
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  totalCount = count;
+  tableBody.innerHTML = "";
+
+  data.forEach(project => {
+    const row = document.createElement("div");
+    row.className = "table-row";
+    row.dataset.id = project.id;
+
+    row.innerHTML = `
+      <div class="col-title">${project.name}</div>
+      <div class="col-date">${new Date(project.created_at).toLocaleDateString()}</div>
+      <div class="col-share"><button class="share-btn">Share</button></div>
+      <div class="col-delete"><button class="delete-btn">Delete</button></div>
+    `;
+
+    row.addEventListener("click", () => {
+      window.location.href = `createPage.html?id=${project.id}`;
+    });
+
+    row.querySelector(".share-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = `sharePage.html?id=${project.id}`;
+    });
+
+    row.querySelector(".delete-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteModal.dataset.projectId = project.id;
+      deleteModalTitle.textContent = `Delete "${project.name}"?`;
+      deleteModal.classList.remove("hidden");
+    });
+
+    tableBody.appendChild(row);
+  });
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  pageLabel.textContent = `Page ${currentPage + 1} of ${totalPages || 1}`;
+  prevBtn.disabled = currentPage === 0;
+  nextBtn.disabled = (currentPage + 1) * PAGE_SIZE >= totalCount;
+}
+
+prevBtn.addEventListener("click", () => {
+  if (currentPage > 0) {
+    currentPage--;
+    loadProjects();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 });
 
-window.addEventListener("load", function () {
-  if (!localStorage.getItem("axolotlRecordingsTourSeen")) {
-    startTour();
+nextBtn.addEventListener("click", () => {
+  if ((currentPage + 1) * PAGE_SIZE < totalCount) {
+    currentPage++;
+    loadProjects();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 });
 
+deleteCancelBtn.addEventListener("click", () => {
+  deleteModal.classList.add("hidden");
+});
+
+deleteConfirmBtn.addEventListener("click", async () => {
+  const projectId = deleteModal.dataset.projectId;
+
+  const { error } = await supabaseClient
+    .from("projects")
+    .delete()
+    .eq("id", projectId);
+
+  if (error) {
+    console.error(error);
+    alert("Failed to delete project.");
+    return;
+  }
+
+  deleteModal.classList.add("hidden");
+  loadProjects();
+});
+
+closeBtn.addEventListener("click", () => {
+  window.location.href = "dashboard.html";
+});
+
+loadProjects();
+
+// Profile
 const savedEmail = localStorage.getItem("loggedInEmail");
 const profileLetter = document.getElementById("profileLetter");
-
 if (savedEmail && profileLetter) {
   profileLetter.textContent = savedEmail.charAt(0).toUpperCase();
 }

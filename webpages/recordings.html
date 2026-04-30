@@ -8,72 +8,63 @@
 </head>
 <body>
   <header class="top-bar">
-<div class="profile-menu-container">
-  <div class="profile-icon" id="profileIcon" title="Logged in">
-    <span id="profileLetter">?</span>
-  </div>
-
-  <div class="profile-dropdown hidden" id="profileDropdown">
-    <button id="logoutBtn">Logout</button>
-  </div>
-</div>
-    <h1>Recordings</h1>
+    <div class="profile-menu-container">
+      <div class="profile-icon" id="profileIcon" title="Logged in">
+        <span id="profileLetter">?</span>
+      </div>
+      <div class="profile-dropdown hidden" id="profileDropdown">
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </div>
+    <h1>Projects</h1>
   </header>
 
   <main class="recordings-wrapper">
     <section class="recordings-card">
       <button class="close-btn" id="closeBtn">×</button>
-      <h2>Your recently recorded sessions</h2>
-      <p class="section-title">Recordings</p>
+      <h2>Your Saved Projects</h2>
 
       <div class="table-card">
         <div class="table-header">
           <div class="col-title">Title</div>
           <div class="col-date">Date</div>
           <div class="col-share">Share</div>
+          <div class="col-delete">Delete</div>
         </div>
+        <div class="table-body" id="recordingsTable"></div>
+      </div>
 
-        <div class="table-body">
-          <div class="table-row">
-            <div class="col-title">Ambient Sketch 01</div>
-            <div class="col-date">04/12/2026</div>
-            <div class="col-share"><button class="share-btn">Share</button></div>
-          </div>
-
-          <div class="table-row">
-            <div class="col-title">Late Night Loop</div>
-            <div class="col-date">04/10/2026</div>
-            <div class="col-share"><button class="share-btn">Share</button></div>
-          </div>
-
-          <div class="table-row">
-            <div class="col-title">Water Texture Demo</div>
-            <div class="col-date">04/08/2026</div>
-            <div class="col-share"><button class="share-btn">Share</button></div>
-          </div>
-
-          <div class="table-row">
-            <div class="col-title">Test Recording A</div>
-            <div class="col-date">04/05/2026</div>
-            <div class="col-share"><button class="share-btn">Share</button></div>
-          </div>
-        </div>
+      <div class="pagination">
+        <button id="prevBtn" class="page-btn" disabled>← Prev</button>
+        <span id="pageLabel" class="page-label">Page 1</span>
+        <button id="nextBtn" class="page-btn">Next →</button>
       </div>
     </section>
   </main>
-<div id="tourOverlay" class="tour-overlay hidden">
-  <div id="tourHighlight" class="tour-highlight"></div>
 
-  <div id="tourPopup" class="tour-popup hidden">
-    <button id="tourCloseBtn" class="tour-close-btn">×</button>
-    <h2 id="tourTitle">Welcome</h2>
-    <p id="tourText"></p>
-
-    <div class="tour-buttons">
-      <button id="tourNextBtn" class="tour-btn">Next</button>
+  <div id="deleteModal" class="delete-modal hidden">
+    <div class="delete-modal-card">
+      <h2 id="deleteModalTitle">Delete this project?</h2>
+      <p>This cannot be undone.</p>
+      <div class="delete-modal-buttons">
+        <button id="deleteConfirmBtn">Delete</button>
+        <button id="deleteCancelBtn">Cancel</button>
+      </div>
     </div>
   </div>
-</div>
+
+  <div id="tourOverlay" class="tour-overlay hidden">
+    <div id="tourHighlight" class="tour-highlight"></div>
+    <div id="tourPopup" class="tour-popup hidden">
+      <button id="tourCloseBtn" class="tour-close-btn">×</button>
+      <h2 id="tourTitle">Welcome</h2>
+      <p id="tourText"></p>
+      <div class="tour-buttons">
+        <button id="tourNextBtn" class="tour-btn">Next</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../logic/recordings.js"></script>
 </body>
